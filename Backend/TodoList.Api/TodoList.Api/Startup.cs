@@ -1,10 +1,17 @@
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System;
+using TodoList.Core;
+using TodoList.Core.Interfaces;
+using TodoList.Core.Services;
+using TodoList.Infrastructure;
+using TodoList.Infrastructure.Data;
 
 namespace TodoList.Api
 {
@@ -16,6 +23,15 @@ namespace TodoList.Api
         }
 
         public IConfiguration Configuration { get; }
+
+        //  Using a custom DI container
+        public void ConfigureContainer(ContainerBuilder containerBuilder)
+        {
+            // Configure custom container.
+            containerBuilder.RegisterModule(new DefaultCoreModule());
+            containerBuilder.RegisterModule(new DefaultInfrastructureModule(true));
+        }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -31,13 +47,14 @@ namespace TodoList.Api
                       });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TodoList.Api", Version = "v1" });
             });
 
-            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoItemsDB"));
+            var connectString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext(connectString!);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,11 +74,31 @@ namespace TodoList.Api
             app.UseCors("AllowAllHeaders");
 
             app.UseAuthorization();
-
+      
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
+            // Seed Database
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                try
+                {
+                    var context = services.GetRequiredService<TodoContext>();
+                    //                    context.Database.Migrate();
+                    context.Database.EnsureCreated();
+                    SeedData.Initialize(services);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
+                }
+            }
         }
     }
 }
