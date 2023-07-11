@@ -12,37 +12,45 @@ export interface TodoItem {
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
+
+//TODO: move this to a ToDoItem Component
 export class AppComponent {
-  items: any[] = [];
+  items: TodoItem[] = [];
   description: string = '';
+  canAddItem: boolean;
+  isCompleted: boolean;
   private readonly endpoints: ApiEndpoints;
   private apiService = inject(ApiService);
 
   public constructor() {
-    this.getItems();
     this.endpoints = endpoints;
+    this.onInit();
   }
 
+  onInit() {
+     this.getItems();
+  }
 
   getItems() {
     return this.apiService
-        .get<any>(ApiEndpointKey.TODOITEMS).subscribe(
-          (response: any) => {
-            // Handle the response
-            this.items = response;
-          },
-          (error: any) => {
-            // Handle any errors
-            alert("error");
-          }
-        );
+              .get<any>(ApiEndpointKey.TODOITEMS).subscribe((response: any) => {
+                  // Handle the response
+                  this.items = response;
+                },
+                (error: any) => {
+                  // Handle any errors
+                  alert("error");
+                }
+              );
   }
 
   handleAdd(description: string) {
-    const newTodoItem = {
+    const newTodoItem =
+    {
       description : description,
     };
 
@@ -52,7 +60,7 @@ export class AppComponent {
         description: description
       }
     ).subscribe(
-      () => {
+      (response: any) => {
          this.getItems();
       },
       (error: any) => {
@@ -67,6 +75,10 @@ export class AppComponent {
   }
 
   handleMarkAsComplete(item: TodoItem) {
+    if(item.isCompleted){
+      return;
+    }
+
     item.isCompleted = true;
     const url = `${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${item.id}`;
     this.apiService.put(url, item)

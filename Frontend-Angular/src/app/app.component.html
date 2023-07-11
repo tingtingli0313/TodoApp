@@ -59,7 +59,9 @@
         </div>
         <div class="mb-3 offset-md-2 row">
           <div class="hstack gap-2">
-            <button type="button" class="btn btn-primary" (click)="handleAdd(description)">
+            <button type="button" class="btn btn-primary" (click)="handleAdd(description)"          
+          
+            >
               Add Item
             </button>
             <button
@@ -101,9 +103,10 @@
                 <button
                   type="button"
                   class="btn btn-warning btn-sm"
+                  ng-disabled="item.isCompleted"
                   (click)="handleMarkAsComplete(item)"
                 >
-                  Mark as completed
+                  {{ !item.isCompleted  ? 'Mark as completed' : 'completed'}}
                 </button>
               </td>
             </tr>

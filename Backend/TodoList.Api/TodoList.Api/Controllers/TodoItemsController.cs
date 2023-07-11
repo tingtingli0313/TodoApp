@@ -28,8 +28,8 @@ namespace TodoList.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTodoItems()
         {
-            var results = await _todoService.GetAllItemsAsync();
-            return Ok(results.Value);
+            var results = (await _todoService.GetAllItemsAsync()).Value.OrderBy(x=> !x.IsCompleted);
+            return Ok(results);
         }
 
         // GET: api/TodoItems/...
@@ -58,24 +58,6 @@ namespace TodoList.Api.Controllers
             updateItem.Id = id;
             updateItem.MarkComplete(todoItem.IsCompleted);
             await _todoService.UpdateAsync(updateItem);
-            //_context.Entry(todoItem).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!TodoItemIdExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
             return NoContent();
         }
 
