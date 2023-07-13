@@ -28,7 +28,7 @@ namespace TodoList.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTodoItems()
         {
-            var results = (await _todoService.GetAllItemsAsync()).Value.OrderBy(x=> !x.IsCompleted);
+            var results = (await _todoService.GetAllItemsAsync()).Value.OrderBy(x=> x.IsCompleted);
             return Ok(results);
         }
 
@@ -70,7 +70,7 @@ namespace TodoList.Api.Controllers
             var createdTodoItem = await _todoService.AddAsync(newItem);
             if (!createdTodoItem.IsSuccess)
             {
-                return BadRequest("Description is invalid");
+                return BadRequest(createdTodoItem.Errors.First());
             }
 
             var result = new TodoItemDTO

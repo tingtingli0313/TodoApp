@@ -49,18 +49,20 @@
             >
             <div class="col-md-6">
               <input
+                #addItemInput
                 placeholder="Enter description..."
                 type="text"
                 id="formAddTodoItem"
                 class="form-control"
+                (input)="onInput(addItemInput.value)"
+                [value]="description"
                 [(ngModel)]="description"
               />
             </div>
           </div>
           <div class="mb-3 offset-md-2 row">
             <div class="hstack gap-2">
-              <button type="button" class="btn btn-primary" (click)="handleAdd(description)"          
-            
+              <button type="button" class="btn btn-primary" (click)="handleAdd()"          
               >
                 Add Item
               </button>
@@ -75,6 +77,7 @@
           </div>
         </div>
       </div>
+      <p *ngIf="errorMessage" class="error-msg">{{errorMessage}}</p>
       <div class="row">
         <div class="col">
           <h1>

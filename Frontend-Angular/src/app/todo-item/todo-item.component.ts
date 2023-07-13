@@ -16,57 +16,65 @@ export interface TodoItem {
   styleUrls: ['./todo-item.component.css'],
 })
 
-//TODO: move this to a ToDoItem Component
 export class ToDoComponent {
   items: TodoItem[] = [];
-  description: any;
-  canAddItem: boolean;
+  description: string;
   isCompleted: boolean;
+  errorMessage: string = "";
   private readonly endpoints: ApiEndpoints;
   private apiService = inject(ApiService);
 
   public constructor() {
     this.endpoints = endpoints;
-    this.onInit();
   }
 
-  onInit() {
+  ngOnInit() {
      this.getItems();
   }
 
-  getItems() {
-    return this.apiService
-              .get<any>(ApiEndpointKey.TODOITEMS).subscribe((response: any) => {
-                  // Handle the response
-                  this.items = response;
-                },
-                (error: any) => {
-                  // Handle any errors
-                  alert("error");
-                }
-              );
+  onInput(description : string){
+    this.description = description;
   }
 
-  handleAdd(description: string) {
-    const newTodoItem =
-    {
-      description : description,
-    };
-
-    this.apiService.post<any, TodoItem>(
-      ApiEndpointKey.TODOITEMS,
+  getItems() {
+    var response = this.apiService.get<any>(ApiEndpointKey.TODOITEMS).subscribe(
       {
-        description: description
+        next: (response) => {
+          this.items = response;
+        },
+        error: (error) => {
+          this.errorMessage = "Error on loading items from backend server. Please make sure your host server is up running.";
+        }
       }
-    ).subscribe(
-      (response: any) => {
-         this.getItems();
-      },
-      (error: any) => {
-        // Handle any errors
-        alert('error on update');
+    );
+  }
+
+  handleAdd() {
+    if (!this.description){
+      this.errorMessage = "Description can not be empty";
+      return;
+    }
+
+    this.errorMessage = "";
+    const newTodoItem = { description : this.description };
+    var response = this.apiService.post<any, TodoItem>(  ApiEndpointKey.TODOITEMS, newTodoItem).subscribe(
+        {
+          next: (response) => {
+            this.getItems();
+            this.handleClear();
+          },
+          error: (error) => {
+            // Handle any errors
+          if (error?.status == 400 && error?.error){
+            this.errorMessage = `Failed add new item due to: ${error?.error}`;
+          }
+          else{
+            //internal server eror
+            this.errorMessage = "Error on update item from backend server.";
+          }
+        }
       }
-    );;
+    );
   }
 
   handleClear() {
@@ -77,18 +85,18 @@ export class ToDoComponent {
     if(item.isCompleted){
       return;
     }
-
     item.isCompleted = true;
     const url = `${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${item.id}`;
-    this.apiService.put(url, item)
-    .subscribe(
-      () => {
-         this.getItems();
-      },
-      (error: any) => {
-        // Handle any errors
-        alert('error on update');
+    var response = this.apiService.put(url, item).subscribe(
+      {
+        next: (response) => {
+          this.getItems();
+        },
+        error: (error) => {
+          //internal server eror
+          this.errorMessage = "Error on update item from backend server.";
+        }
       }
-    );;
+    );
   }
 }

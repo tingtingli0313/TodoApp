@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 using TodoList.Core.Interfaces;
 
 namespace TodoList.Core.Services;
@@ -16,7 +17,7 @@ public class ToDoItemService : IToDoItemService
     {
         if(_dbContext.GetItems().Any(x => string.Equals(x.Description.ToLowerInvariant(), newItem.Description.ToLowerInvariant())))
         {
-            return Result<TodoItem>.Conflict();
+            return Result<TodoItem>.Conflict($"Description {newItem.Description} is already exist.");
         }
 
         _dbContext.GetItems().Add(newItem);

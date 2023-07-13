@@ -1,7 +1,7 @@
 using System;
 using TodoList.Core;
 
-namespace Clean.Architecture.UnitTests;
+namespace TodoList.Api.UnitTests;
 
 // Learn more about test builders:
 // https://ardalis.com/improve-tests-with-the-builder-pattern-for-test-data
