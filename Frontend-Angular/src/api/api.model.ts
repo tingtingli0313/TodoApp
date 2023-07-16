@@ -8,7 +8,6 @@ export enum ApiEndpointKey {
      * Customer details endpoint
      */
     TODOITEMS,
-    POSTITEM,
   }
   
   export interface ApiEndpoint {

@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { endpoints } from './api-endpoints-map';
 import { ApiEndpointKey, ApiEndpoints, QueryParams } from './api.model';
-//import { CONTEXT, setContext } from './set-api-context';
+import { environment } from '../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   private readonly endpoints: ApiEndpoints;
-  
+  private baseUrl = environment.apiUrl;
+
   constructor(private http: HttpClient) {
     this.endpoints = endpoints;
   }
@@ -26,24 +27,11 @@ export class ApiService {
     params?: QueryParams,
     options?: { [key: string]: any }
   ): Observable<R> {
-    return this.http.get<R>(this.getApiUrl(endpoint, params), {
-      context: null,
-      ...options
-    });
+    let url = `${this.baseUrl}${this.endpoints[ApiEndpointKey.TODOITEMS].path}`;
+   
+    return this.http.get<R>(url, options);
   }
 
-  /**
-   * Send GET request
-   * @param endpoint
-   * @param fullUrl
-   * @returns Observable<R>
-   */
-  getBlob(endpoint: ApiEndpointKey, fullUrl: string): Observable<Blob> {
-    return this.http.get(fullUrl, {
-      context: null,
-      responseType: 'blob'
-    });
-  }
 
   /**
    * Send PUT request
@@ -53,11 +41,12 @@ export class ApiService {
    * @returns Observable<R>
    */
   put<P, R>(
-    endpoint: string,
-    payload?: P,
+    endpoint: ApiEndpointKey,
+    payload?: any,
     params?: QueryParams
   ): Observable<R> {
-    return this.http.put<R>(endpoint, payload, {
+    let url = `${this.baseUrl}${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${payload?.id}`
+    return this.http.put<R>(url, payload, {
       context: null
     });
   }
@@ -71,10 +60,11 @@ export class ApiService {
    */
   patch<P, R>(
     endpoint: ApiEndpointKey,
-    payload?: P,
+    payload?: any,
     params?: QueryParams
   ): Observable<R> {
-    return this.http.patch<R>(this.getApiUrl(endpoint, params), payload, {
+    let url = `${this.baseUrl}${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${payload?.id}`
+    return this.http.patch<R>((url), payload, {
       context: null
     });
   }
@@ -91,7 +81,9 @@ export class ApiService {
     payload?: P,
     params?: QueryParams
   ): Observable<R> {
-    return this.http.post<R>(this.getApiUrl(endpoint, params), payload, {
+    let url = `${this.baseUrl}${this.endpoints[ApiEndpointKey.TODOITEMS].path}`;
+
+    return this.http.post<R>(url, payload, {
       context: null
     });
   }

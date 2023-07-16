@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { ApiService } from '../../api/api.service';
 import { ApiEndpointKey, ApiEndpoints} from '../../api/api.model';
 import { endpoints } from '../../api/api-endpoints-map';
-import { FormsModule } from '@angular/forms';
 
 export interface TodoItem {
   description: string;
@@ -57,7 +56,7 @@ export class ToDoComponent {
 
     this.errorMessage = "";
     const newTodoItem = { description : this.description };
-    var response = this.apiService.post<any, TodoItem>(  ApiEndpointKey.TODOITEMS, newTodoItem).subscribe(
+    var response = this.apiService.post<any, TodoItem>(ApiEndpointKey.TODOITEMS, newTodoItem).subscribe(
         {
           next: (response) => {
             this.getItems();
@@ -86,8 +85,8 @@ export class ToDoComponent {
       return;
     }
     item.isCompleted = true;
-    const url = `${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${item.id}`;
-    var response = this.apiService.put(url, item).subscribe(
+   // const url = `${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${item.id}`;
+    var response = this.apiService.put<any, TodoItem>(ApiEndpointKey.TODOITEMS, item).subscribe(
       {
         next: (response) => {
           this.getItems();
