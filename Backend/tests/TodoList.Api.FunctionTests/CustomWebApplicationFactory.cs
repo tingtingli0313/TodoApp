@@ -1,78 +1,90 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TodoList.Infrastructure.Data;
+using Microsoft.Extensions.Options;
+using Moq.Protected;
+using Moq;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace TodoList.Api.FunctionTests;
-
-public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+public class TestWebApplicationFactory<TStartup>
+       : WebApplicationFactory<TStartup> where TStartup : class
 {
-    protected override IHost CreateHost(IHostBuilder builder)
+    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
+    private readonly Mock<IHttpClientFactory> _mockFactory;
+
+    public bool BypassAuthorization { get; set; }
+
+    public TestWebApplicationFactory()
     {
-        builder.UseEnvironment("Development"); // will not send real emails
-        var host = builder.Build();
-        host.Start();
+        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        var client = new HttpClient(_mockHttpMessageHandler.Object);
+        client.BaseAddress = new Uri("https://test.com/");
 
-        // Get service provider.
-        var serviceProvider = host.Services;
-
-        // Create a scope to obtain a reference to the database
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var scopedServices = scope.ServiceProvider;
-            var db = scopedServices.GetRequiredService<TodoContext>();
-
-            var logger = scopedServices
-                .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-
-            // Ensure the database is created.
-            db.Database.EnsureCreated();
-
-            try
-            {
-                // Can also skip creating the items
-                //if (!db.ToDoItems.Any())
-                //{
-                // Seed the database with test data.
-                SeedData.PopulateTestData(db);
-                //}
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred seeding the " +
-                                    "database with test messages. Error: {exceptionMessage}", ex.Message);
-            }
-        }
-
-        return host;
+        _mockFactory = new Mock<IHttpClientFactory>();
+        _mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder
-            .ConfigureServices(services =>
+        builder.ConfigureTestServices(sp => sp.AddScoped(_ => _mockFactory.Object));
+    }
+
+    public void MockHttpResponse(HttpStatusCode statusCode, string requestUrl, string content)
+    {
+        _mockHttpMessageHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(msg => msg.RequestUri!.ToString().EndsWith(requestUrl)),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
             {
-                // Remove the app's ApplicationDbContext registration.
-                var descriptor = services.SingleOrDefault(
-            d => d.ServiceType ==
-                typeof(DbContextOptions<TodoContext>));
-
-                if (descriptor != null)
-                {
-                    services.Remove(descriptor);
-                }
-
-                // This should be set for each individual test run
-                string inMemoryCollectionName = Guid.NewGuid().ToString();
-
-                // Add ApplicationDbContext using an in-memory database for testing.
-                services.AddDbContext<TodoContext>(options =>
-                {
-                    options.UseInMemoryDatabase(inMemoryCollectionName);
-                });
+                StatusCode = statusCode,
+                Content = new StringContent(content),
             });
+    }
+
+    public void MockHttpResponse<T>(HttpStatusCode statusCode, string requestUrl, T content)
+    {
+        _mockHttpMessageHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync",
+                ItExpr.Is<HttpRequestMessage>(msg => msg.RequestUri!.ToString().ToLowerInvariant().EndsWith(requestUrl.ToLowerInvariant())),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = statusCode,
+                Content = new StringContent(JsonConvert.SerializeObject(content)),
+            });
+    }
+
+    public void ClearInvocations()
+    {
+        _mockHttpMessageHandler.Invocations.Clear();
+    }
+
+    public void VerifyHttpResponse(string url, Times times)
+    {
+        _mockHttpMessageHandler
+            .Protected()
+            .Verify("SendAsync", times,
+                ItExpr.Is<HttpRequestMessage>(msg => msg.RequestUri!.ToString().ToLowerInvariant().EndsWith(url.ToLowerInvariant())),
+                ItExpr.IsAny<CancellationToken>());
+    }
+
+    public ILogger<T> GetTestDebuggingLogger<T>()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddLogging(x =>
+            {
+                x.AddDebug();
+            })
+            .BuildServiceProvider();
+
+        return serviceProvider.GetService<ILogger<T>>();
     }
 }
