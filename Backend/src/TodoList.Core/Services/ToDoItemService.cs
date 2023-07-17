@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 using TodoList.Core.Interfaces;
 
 namespace TodoList.Core.Services;

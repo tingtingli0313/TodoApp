@@ -30,7 +30,7 @@ public static class SeedData
             // Look for any TODO items.
             if (dbContext.ToDoItems.Any())
             {
-                return;   // DB has been seeded
+                return;  
             }
 
             PopulateTestData(dbContext);

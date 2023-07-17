@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-
 namespace TodoList.Core.Interfaces;
 
 public interface IToDoItemService

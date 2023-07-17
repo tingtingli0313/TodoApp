@@ -79,32 +79,6 @@ namespace TodoList.Api.Controllers
                 description: createdTodoItem.Value.Description
             );
             return CreatedAtAction(nameof(GetTodoItem), new { id = result.Id }, result);
-
-            // return Ok(result);
-
-            //if (string.IsNullOrEmpty(todoItem?.Description))
-            //{
-            //    return BadRequest("Description is required");
-            //}
-            //else if (TodoItemDescriptionExists(todoItem.Description))
-            //{
-            //    return BadRequest("Description already exists");
-            //}
-
-            //_context.TodoItems.Add(todoItem);
-            //await _context.SaveChangesAsync();
-
         }
-
-        //private bool TodoItemIdExists(Guid id)
-        //{
-        //    return _context.TodoItems.Any(x => x.Id == id);
-        //}
-
-        //private bool TodoItemDescriptionExists(string description)
-        //{
-        //    return _context.TodoItems
-        //           .Any(x => x.Description.ToLowerInvariant() == description.ToLowerInvariant() && !x.IsCompleted);
-        //}
     }
 }

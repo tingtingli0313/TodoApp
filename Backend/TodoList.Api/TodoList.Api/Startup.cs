@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using TodoList.Core;
-using TodoList.Core.Interfaces;
-using TodoList.Core.Services;
 using TodoList.Infrastructure;
 using TodoList.Infrastructure.Data;
 
@@ -89,7 +87,6 @@ namespace TodoList.Api
                 try
                 {
                     var context = services.GetRequiredService<TodoContext>();
-                    //                    context.Database.Migrate();
                     context.Database.EnsureCreated();
                     SeedData.Initialize(services);
                 }

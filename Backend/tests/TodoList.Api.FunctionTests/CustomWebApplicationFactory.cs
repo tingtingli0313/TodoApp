@@ -4,19 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 using TodoList.Infrastructure.Data;
 
 namespace TodoList.Api.FunctionTests;
 
 public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
-    /// <summary>
-    /// Overriding CreateHost to avoid creating a separate ServiceProvider per this thread:
-    /// https://github.com/dotnet-architecture/eShopOnWeb/issues/465
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.UseEnvironment("Development"); // will not send real emails
@@ -27,7 +20,6 @@ public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStar
         var serviceProvider = host.Services;
 
         // Create a scope to obtain a reference to the database
-        // context (AppDbContext).
         using (var scope = serviceProvider.CreateScope())
         {
             var scopedServices = scope.ServiceProvider;
