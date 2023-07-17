@@ -62,7 +62,6 @@ public class ToDoItemService : IToDoItemService
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            // TODO: Log details here
             return Result<TodoItem>.Error(new[] { ex.Message });
         }
        

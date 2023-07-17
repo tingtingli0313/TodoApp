@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../app.module'; // Import the module containing AppComponent
+import { AppModule } from '../../app.module'; // Import the module containing AppComponent
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ApiService } from 'src/api/api.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ToDoComponent } from './todo-item.component';
+import { ToDoComponent } from './todo-items.component';
 import { of } from 'rxjs';
 class MockApiService {
   get(any: any) {

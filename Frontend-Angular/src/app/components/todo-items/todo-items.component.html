@@ -99,7 +99,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of items">
+              <app-todo-item
+                *ngFor="let item of items"
+                [item]="item"
+                (onClickReminder)="handleMarkAsComplete(item)"
+              ></app-todo-item>
+             
+              <!-- <tr *ngFor="let item of items">
                 <td>{{ item.id }}</td>
                 <td>{{ item.description }}</td>
                 <td>
@@ -112,9 +118,9 @@
                     {{ !item.isCompleted  ? 'Mark as completed' : 'completed'}}
                   </button>
                 </td>
-              </tr>
-            </tbody>
-          </table>
+              </tr> -->
+             </tbody>
+          </table> 
         </div>
       </div>
     </div>

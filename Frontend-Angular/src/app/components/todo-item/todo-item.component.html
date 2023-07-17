@@ -1,0 +1,16 @@
+<div class="row">
+    <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+            <button
+            type="button"
+            class="btn btn-warning btn-sm"
+            ng-disabled="item.isCompleted"
+            (click)="handleMarkAsComplete(item)"
+            >
+            {{ !item.isCompleted  ? 'Mark as completed' : 'completed'}}
+            </button>
+        </td>
+    </tr>
+</div>

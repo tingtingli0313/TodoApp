@@ -1,18 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { ApiService } from '../../api/api.service';
-import { ApiEndpointKey, ApiEndpoints} from '../../api/api.model';
-import { endpoints } from '../../api/api-endpoints-map';
-
-export interface TodoItem {
-  description: string;
-  id: string;
-  isCompleted: boolean;
-}
+import { ApiService } from '../../../api/api.service';
+import { ApiEndpointKey, ApiEndpoints} from '../../../api/api.model';
+import { endpoints } from '../../../api/api-endpoints-map';
+import { TodoItem } from '../../models/TodoItem';
 
 @Component({
   selector: 'todo-item',
-  templateUrl: './todo-item.component.html',
-  styleUrls: ['./todo-item.component.css'],
+  templateUrl: './todo-items.component.html',
+  styleUrls: ['./todo-items.component.css'],
 })
 
 export class ToDoComponent {
@@ -85,14 +80,12 @@ export class ToDoComponent {
       return;
     }
     item.isCompleted = true;
-   // const url = `${this.endpoints[ApiEndpointKey.TODOITEMS].path}/${item.id}`;
     var response = this.apiService.put<any, TodoItem>(ApiEndpointKey.TODOITEMS, item).subscribe(
       {
         next: (response) => {
           this.getItems();
         },
         error: (error) => {
-          //internal server eror
           this.errorMessage = "Error on update item from backend server.";
         }
       }

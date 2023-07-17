@@ -1,0 +1,8 @@
+.parent-row {
+    /* CSS styles for the parent row */
+    background-color: #f0f0f0;
+    /* Add other styles as needed */
+    display: table-row;
+    vertical-align: inherit;
+    width: 490px;
+  }
