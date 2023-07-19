@@ -1,5 +1,3 @@
-// TODO: This currently uses the numeric value which is difficult to understand.
-// Ideally this would reference the path directly
 /*
  * Add new endpoint key here
  */
@@ -12,8 +10,6 @@ export enum ApiEndpointKey {
   
   export interface ApiEndpoint {
     /**
-     * Query params and path to the resources
-     * eg. /v1/accounts/{accountId}
      */
     path: string;
   

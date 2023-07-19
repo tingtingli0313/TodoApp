@@ -1,0 +1,36 @@
+<div class="container">
+    <h1>Add Item</h1>
+    <div class="mb-3 row">
+      <label
+        for="formAddTodoItem"
+        class="form-label col-form-label col-sm-2"
+        >Description</label
+      >
+      <div class="col-md-6">
+        <input
+          #addItemInput
+          placeholder="Enter description..."
+          type="text"
+          id="formAddTodoItem"
+          class="form-control"
+          [value]="description"
+          [(ngModel)]="description"
+        />
+      </div>
+    </div>
+    <div class="mb-3 offset-md-2 row">
+      <div class="hstack gap-2">
+        <button type="button" class="btn btn-primary" (click)="handleAdd(description)"          
+        >
+          Add Item
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="handleClear()"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>

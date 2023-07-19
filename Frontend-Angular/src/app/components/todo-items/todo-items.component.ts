@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../../api/api.service';
 import { ApiEndpointKey, ApiEndpoints} from '../../../api/api.model';
 import { endpoints } from '../../../api/api-endpoints-map';
@@ -10,9 +10,9 @@ import { TodoItem } from '../../models/TodoItem';
   styleUrls: ['./todo-items.component.css'],
 })
 
-export class ToDoComponent {
+export class ToDoComponent implements OnInit {
   items: TodoItem[] = [];
-  description: string;
+
   isCompleted: boolean;
   errorMessage: string = "";
   private readonly endpoints: ApiEndpoints;
@@ -24,10 +24,6 @@ export class ToDoComponent {
 
   ngOnInit() {
      this.getItems();
-  }
-
-  onInput(description : string){
-    this.description = description;
   }
 
   getItems() {
@@ -43,19 +39,17 @@ export class ToDoComponent {
     );
   }
 
-  handleAdd() {
-    if (!this.description){
+  handleAdd(todoItem: TodoItem) {
+    if (!todoItem.description){
       this.errorMessage = "Description can not be empty";
       return;
     }
 
     this.errorMessage = "";
-    const newTodoItem = { description : this.description };
-    var response = this.apiService.post<any, TodoItem>(ApiEndpointKey.TODOITEMS, newTodoItem).subscribe(
+    var response = this.apiService.post<any, TodoItem>(ApiEndpointKey.TODOITEMS, todoItem).subscribe(
         {
           next: (response) => {
             this.getItems();
-            this.handleClear();
           },
           error: (error) => {
             // Handle any errors
@@ -69,10 +63,6 @@ export class ToDoComponent {
         }
       }
     );
-  }
-
-  handleClear() {
-    this.description = '';
   }
 
   handleMarkAsComplete(item: TodoItem) {
