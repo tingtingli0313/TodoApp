@@ -14,7 +14,8 @@ export class TodoItemComponent implements OnInit {
 
     ngOnInit(): void {}
     
-    handleMarkAsComplete(task) {
+    handleMarkAsComplete(task: TodoItem) {
+      task.isCompleted = true;
       this.onClickReminder.emit(task);
     }
 }

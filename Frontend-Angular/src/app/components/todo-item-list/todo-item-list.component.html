@@ -1,22 +1,3 @@
-<!-- <div > -->
-    <!-- <tr> -->
-        <!-- <td>{{ item.id }}</td>
-        <td>{{ item.description }}</td>
-        <td>
-            <button
-            type="button"
-            class="btn btn-warning btn-sm"
-            ng-disabled="item.isCompleted"
-            (click)="handleMarkAsComplete(item)"
-            >
-            {{ !item.isCompleted  ? 'Mark as completed' : 'completed'}}
-            </button>
-        </td> -->
-    <!-- </tr> -->
-<!-- </div> -->
-
-
-
 <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
@@ -26,14 +7,6 @@
       </tr>
     </thead>
     <tbody>
-      <!-- <tr>
-        <app-todo-item
-          *ngFor="let item of items"
-          [item]="item"
-          (onClickReminder)="handleMarkAsComplete(item)"
-        ></app-todo-item>
-      </tr> -->
-     
       <tr *ngFor="let item of items">
         <td>{{ item.id }}</td>
         <td>{{ item.description }}</td>
@@ -41,7 +14,7 @@
           <button
             type="button"
             class="btn btn-warning btn-sm"
-            ng-disabled="item.isCompleted"
+            [disabled]="item.isCompleted"
             (click)="handleMarkAsComplete(item)"
           >
             {{ !item.isCompleted  ? 'Mark as completed' : 'completed'}}
