@@ -11,15 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E47B5E7-200
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8889DADC-393B-49C5-8022-53216DC88F0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Core", "..\src\TodoList.Core\TodoList.Core.csproj", "{7E92D2AC-CE79-44BD-BC71-46440CDF01BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.Core", "..\src\TodoList.Core\TodoList.Core.csproj", "{7E92D2AC-CE79-44BD-BC71-46440CDF01BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Infrastructure", "..\src\TodoList.Infrastructure\TodoList.Infrastructure.csproj", "{E721809C-BEEF-46B8-B356-808FF1644E75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.Infrastructure", "..\src\TodoList.Infrastructure\TodoList.Infrastructure.csproj", "{E721809C-BEEF-46B8-B356-808FF1644E75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\src\Common\Common.csproj", "{4BC5599C-8753-408C-93F1-40F8EB7D0B2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "..\src\Common\Domain.csproj", "{4BC5599C-8753-408C-93F1-40F8EB7D0B2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "..\tests\IntegrationTest\IntegrationTest.csproj", "{7797DAF7-32DC-4D8C-97A7-E3AF297F41CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTest", "..\tests\IntegrationTest\IntegrationTest.csproj", "{7797DAF7-32DC-4D8C-97A7-E3AF297F41CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Api.FunctionTests", "..\tests\TodoList.Api.FunctionTests\TodoList.Api.FunctionTests.csproj", "{2669F266-E7BE-4403-AF26-26BDDD18DBCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList.Api.FunctionTests", "..\tests\TodoList.Api.FunctionTests\TodoList.Api.FunctionTests.csproj", "{2669F266-E7BE-4403-AF26-26BDDD18DBCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

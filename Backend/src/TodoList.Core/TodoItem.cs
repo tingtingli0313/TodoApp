@@ -1,11 +1,9 @@
 ﻿using Ardalis.GuardClauses;
-using System.Xml.Linq;
 using TodoList.Core.Shared;
-using TodoList.Core.Shared.Interfaces;
 
 namespace TodoList.Core;
 
-public class TodoItem : EntityBase, IAggregateRoot
+public class TodoItem : EntityBase
 {
     public string Description { get; set; } = string.Empty;
 
